@@ -88,9 +88,9 @@ jobs:
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
-          IMAGE: ${{ env.IMAGE_NAME }}:${{ github.sha }}
         run: |
-          ssh -i ~/.ssh/learnsphere_key "$EC2_USER@$EC2_HOST"             "cd /opt/learnsphere && ./scripts/deploy.sh '$IMAGE_NAME' '${GITHUB_SHA}'"
+          ssh -i ~/.ssh/learnsphere_key "$EC2_USER@$EC2_HOST" \
+	    "cd /opt/learnsphere && ./scripts/deploy.sh '${{ env.IMAGE_NAME }}' '${GITHUB_SHA}'"
 
       - name: Wait for health check
         env:
