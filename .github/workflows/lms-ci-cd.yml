@@ -107,7 +107,8 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
-          ssh -i ~/.ssh/learnsphere_key "$EC2_USER@$EC2_HOST"             "cd /opt/learnsphere && ./scripts/rollback.sh"
+          ssh -i ~/.ssh/learnsphere_key "$EC2_USER@$EC2_HOST" \
+	    "cd /opt/learnsphere && ./scripts/rollback.sh"
 
       - name: Notify deployment
         if: always()
