@@ -87,16 +87,19 @@ jobs:
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           ssh -i ~/.ssh/learnsphere_key "$EC2_USER@$EC2_HOST" \
-	    "cd /opt/learnsphere && ./scripts/deploy.sh '${{ env.IMAGE_NAME }}' '${GITHUB_SHA}'"
+            "cd /opt/learnsphere && ./scripts/deploy.sh '$IMAGE_NAME' '$IMAGE_TAG'"
 
       - name: Wait for health check
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
-          ssh -i ~/.ssh/learnsphere_key "$EC2_USER@$EC2_HOST"             "cd /opt/learnsphere && ./scripts/health_check.sh http://127.0.0.1:5000/health"
+          ssh -i ~/.ssh/learnsphere_key "$EC2_USER@$EC2_HOST" \
+            "cd /opt/learnsphere && ./scripts/health_check.sh http://127.0.0.1:5000/health"
 
       - name: Roll back if deployment failed
         if: failure()
