@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LearnSphere - Enrollments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<h1>🎓 LearnSphere</h1>
+
+<div class="card">
+
+<h2>📝 Enrollments</h2>
+
+<table border="1" cellpadding="10" cellspacing="0">
+<tr>
+    <th>Enrollment ID</th>
+    <th>Student ID</th>
+    <th>Course ID</th>
+</tr>
+
+{% for enrollment in enrollments %}
+<tr>
+    <td>{{ enrollment[0] }}</td>
+    <td>{{ enrollment[1] }}</td>
+    <td>{{ enrollment[2] }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/">⬅ Back to Dashboard</a>
+
+</div>
+
+<footer>
+LearnSphere • AWS EC2 • Amazon RDS PostgreSQL
+</footer>
+
+</div>
+
+</body>
+</html>
