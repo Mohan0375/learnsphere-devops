@@ -108,10 +108,10 @@ jobs:
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
           ssh -i ~/.ssh/learnsphere_key "$EC2_USER@$EC2_HOST" \
-	    "cd /opt/learnsphere && ./scripts/rollback.sh"
+            "cd /opt/learnsphere && ./scripts/rollback.sh"
 
       - name: Notify deployment
-        if: always()
+	if: always()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           STATUS: ${{ job.status }}
@@ -121,4 +121,6 @@ jobs:
           else
             MESSAGE="LearnSphere deployment failed/rolled back: $GITHUB_SHA"
           fi
+
           ./scripts/notify.sh "$MESSAGE"
+
