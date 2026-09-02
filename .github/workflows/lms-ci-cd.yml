@@ -2,9 +2,11 @@ name: LearnSphere CI/CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -18,6 +20,7 @@ jobs:
   test:
     name: Automated tests
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,8 +48,10 @@ jobs:
     needs: test
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -55,7 +60,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -70,8 +75,10 @@ jobs:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment: production
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Configure SSH
         env:
@@ -111,16 +118,8 @@ jobs:
             "cd /opt/learnsphere && ./scripts/rollback.sh"
 
       - name: Notify deployment
-	if: always()
+        if: always()
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          STATUS: ${{ job.status }}
         run: |
-          if [ "$STATUS" = "success" ]; then
-            MESSAGE="LearnSphere deployment succeeded: $GITHUB_SHA"
-          else
-            MESSAGE="LearnSphere deployment failed/rolled back: $GITHUB_SHA"
-          fi
-
-          ./scripts/notify.sh "$MESSAGE"
-
+          ./scripts/notify.sh "LearnSphere deployment ${{ job.status }}: $GITHUB_SHA"
