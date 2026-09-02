@@ -53,3 +53,4 @@ The original project archive contained a real-looking database password in `.env
 - Test cases: `docs/test-cases.md`.
 - Troubleshooting: `docs/troubleshooting.md`.
 - Rollback runbook: `docs/rollback-runbook.md`.
+CI/CD deployment verification
