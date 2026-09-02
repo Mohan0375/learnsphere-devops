@@ -54,3 +54,115 @@ The original project archive contained a real-looking database password in `.env
 - Troubleshooting: `docs/troubleshooting.md`.
 - Rollback runbook: `docs/rollback-runbook.md`.
 CI/CD deployment verification
+
+
+## DevOps Implementation
+
+LearnSphere has been enhanced with a complete CI/CD deployment workflow.
+
+### CI/CD Pipeline
+
+```text
+Developer
+   |
+   | git push
+   v
+GitHub Repository
+   |
+   v
+GitHub Actions
+   |
+   +----> Automated Tests
+   |          |
+   |          v
+   |       pytest
+   |
+   +----> Docker Build
+   |          |
+   |          v
+   |      GitHub Container Registry
+   |
+   +----> Deployment
+              |
+              v
+          AWS EC2
+              |
+              v
+       Docker Compose
+              |
+        +-----+-----+
+        |           |
+        v           v
+   LearnSphere   PostgreSQL
+        |
+        v
+   Health Check
+
+Technologies Used
+Git & GitHub — source code management
+GitHub Actions — CI/CD automation
+Python / Flask — application
+Pytest — automated testing
+Docker — containerization
+Docker Compose — application and database orchestration
+GitHub Container Registry (GHCR) — Docker image registry
+AWS EC2 — deployment server
+PostgreSQL — application database
+Bash — deployment and rollback automation
+CI/CD Workflow
+
+The GitHub Actions pipeline performs the following:
+
+Runs automated pytest tests.
+Builds the LearnSphere Docker image.
+Publishes the image to GHCR.
+Connects to the AWS EC2 server through SSH.
+Pulls the versioned Docker image.
+Deploys the application using Docker Compose.
+Performs an application/database health check.
+Automatically attempts rollback when deployment verification fails.
+Deployment
+
+The application is deployed to an AWS EC2 Ubuntu server using Docker Compose.
+
+The application exposes:
+
+http://<EC2-PUBLIC-IP>:5000
+
+Health endpoint:
+
+http://<EC2-PUBLIC-IP>:5000/health
+
+Example health response:
+
+{
+  "database": "healthy",
+  "status": "healthy"
+}
+Rollback
+
+Deployments maintain the previously working Docker image.
+
+Rollback is automated using:
+
+./scripts/rollback.sh
+
+The rollback process:
+
+Retrieves the previously deployed image.
+Pulls the image from GHCR.
+Recreates the application container.
+Keeps the PostgreSQL database running.
+Restores the previous application version.
+Deployment Evidence
+
+The project has been successfully validated with:
+
+GitHub Actions CI/CD pipeline — successful
+Automated tests — passed
+Docker image build and GHCR publication — successful
+AWS EC2 deployment — successful
+LearnSphere container — healthy
+PostgreSQL container — healthy
+Application health check — successful
+Rollback procedure — successfully tested
